@@ -40,3 +40,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Migration plans and changelogs (private)
+MIGRATION*.md
+
+# PocketBase data
+/pb_data/
+recipes_backup.json

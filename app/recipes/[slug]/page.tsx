@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getRecipeBySlug, getAssetURL } from "@/lib/directus";
+import { getRecipeBySlug, getAssetURL } from "@/lib/pocketbase";
 import RecipeBody from "./RecipeBody";
 import RecipeNotes from "./RecipeNotes";
 import RecipeActions from "./RecipeActions";
@@ -23,7 +23,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
     const recipe = await getRecipeBySlug(slug);
     if (!recipe) notFound();
 
-    const heroImage = getAssetURL(recipe.image, { width: 800, quality: 80 });
+    const heroImage = getAssetURL(recipe.id, recipe.image, { width: "800", quality: "80" });
 
     return (
         <article className="recipe-page">

@@ -50,6 +50,7 @@ body {
 
   /* ── Header ── */
   .sidebar__header {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 1.15rem 1.25rem;
@@ -93,6 +94,39 @@ body {
     opacity: 1;
     visibility: visible;
     transition: opacity 0.2s ease 0.06s, visibility 0s 0s;
+  }
+
+  /* Hidden admin access — looks like a tiny decorative dot */
+  .sidebar__admin-trigger {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .sidebar__header:hover .sidebar__admin-trigger {
+    opacity: 1;
+  }
+
+  .sidebar__admin-trigger span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text);
+    opacity: 0.15;
+    transition: opacity 0.2s, background 0.2s;
+  }
+
+  .sidebar__admin-trigger:hover span {
+    opacity: 0.6;
+    background: var(--accent);
   }
 
   /* ── Navigation ── */

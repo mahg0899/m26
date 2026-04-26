@@ -154,6 +154,9 @@ export default function Sidebar() {
             </span>
             <span className="sidebar__logo-text">M26</span>
           </Link>
+          <Link href="/admin/recipes" className="sidebar__admin-trigger" title="">
+            <span />
+          </Link>
         </div>
 
         {/* Navigation */}
@@ -197,7 +200,7 @@ export default function Sidebar() {
           ))}
           <div className="sidebar__footer-meta">
             <span className="sidebar__status-dot" />
-            <span className="sidebar__link-text sidebar__version">v0.2.0</span>
+            <span className="sidebar__link-text sidebar__version">v0.3.0</span>
           </div>
         </div>
       </aside>

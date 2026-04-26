@@ -1,0 +1,77 @@
+/* ========================================================
+   SHARED ADMIN STYLES (login gate, etc.)
+   ======================================================== */
+
+@layer base {
+
+  /* ── Login gate ── */
+  .editor-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+  }
+
+  .editor-login__form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .editor-login__title {
+    font-family: var(--font-title);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0;
+  }
+
+  .editor-login__subtitle {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--text);
+    opacity: 0.5;
+    margin-bottom: 8px;
+  }
+
+  .editor-login__form input {
+    padding: 10px 14px;
+    border: 1px solid rgba(26, 28, 25, 0.12);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    background: transparent;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .editor-login__form input:focus {
+    border-color: var(--accent);
+  }
+
+  .editor-login__form button {
+    padding: 10px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .editor-login__form button:hover {
+    opacity: 0.9;
+  }
+
+  .editor-login__error {
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-family: var(--font-body);
+  }
+}

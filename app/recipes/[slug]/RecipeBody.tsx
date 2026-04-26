@@ -254,9 +254,9 @@ export default function RecipeBody({ recipeSlug, html }: RecipeBodyProps) {
         if (block.type !== "steps") return null;
         return (
           <div key={`steps-${blockIdx}`} className="recipe-ritual">
-            <h2 className="recipe-ritual__title">El Procedimiento</h2>
+            <h2 className="recipe-ritual__title">Procedimiento</h2>
             <p className="recipe-ritual__subtitle">
-              Una ruta de pasos para lograr un resultado delicioso
+              Pasos para lograr un resultado delicioso
             </p>
             {block.items.map((step, i) => (
               <div className="recipe-step" key={i}>

@@ -6,7 +6,7 @@ export default function Recipes() {
         <div className="flex flex-col gap-2 mx-auto w-9/10 pt-15 md:pt-10">
             <h1>Recetas</h1>
             <p>En construcción...</p>
-            <Link href="/recipes/test">Test</Link>
+            <Link href="/recipes/testing-recipe">Test</Link>
         </div>
     );
 }
