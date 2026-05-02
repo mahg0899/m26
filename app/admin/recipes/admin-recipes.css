@@ -52,6 +52,44 @@
     opacity: 0.9;
   }
 
+  /* ── Featured picker ── */
+  .admin-recipes__featured {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(26, 28, 25, 0.025);
+    border: 1px solid rgba(26, 28, 25, 0.06);
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .admin-recipes__featured-label {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text);
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .admin-recipes__featured-select {
+    flex: 1;
+    padding: 5px 8px;
+    border: 1px solid rgba(26, 28, 25, 0.1);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    background: transparent;
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .admin-recipes__featured-select:focus {
+    border-color: var(--accent);
+  }
+
   /* ── Loading / Empty ── */
   .admin-recipes__loading,
   .admin-recipes__empty {

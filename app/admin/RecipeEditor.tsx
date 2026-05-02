@@ -324,7 +324,14 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
         <div className="editor__left">
           <div className="editor__meta-field">
             <label className="editor__field-label">Colección</label>
-            <input placeholder="e.g. Summer 2024" value={collectionLabel} onChange={(e) => setCollectionLabel(e.target.value)} />
+            <select value={collectionLabel} onChange={(e) => setCollectionLabel(e.target.value)} className="editor__select">
+              <option value="">Sin colección</option>
+              <option value="Summer Collection 2024">Summer Collection 2024</option>
+              <option value="Autumn Harvest">Autumn Harvest</option>
+              <option value="Winter Comfort">Winter Comfort</option>
+              <option value="Spring Fresh">Spring Fresh</option>
+              <option value="Testing Collection">Testing Collection</option>
+            </select>
           </div>
           <input className="editor__title-input" placeholder="Título de la Receta..." value={title} onChange={(e) => setTitle(e.target.value)} />
           <label className="editor__field-label">Descripción de la receta</label>

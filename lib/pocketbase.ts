@@ -56,3 +56,15 @@ export async function getRecipeBySlug(slug: string): Promise<Recipe | null> {
   const data = await res.json();
   return data.items?.[0] || null;
 }
+
+// ── Settings ──
+
+export async function getFeaturedCollection(): Promise<string | null> {
+  const res = await fetch(
+    `${PB_URL}/api/collections/settings/records?perPage=1`,
+    { next: { revalidate: 60 } }
+  );
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.items?.[0]?.featured_collection || null;
+}

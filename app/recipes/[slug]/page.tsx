@@ -4,7 +4,7 @@ import { getRecipeBySlug, getAssetURL } from "@/lib/pocketbase";
 import RecipeBody from "./RecipeBody";
 import RecipeNotes from "./RecipeNotes";
 import RecipeActions from "./RecipeActions";
-import "../recipes.css";
+import "./recipe-slug.css";
 
 const DIFFICULTY_LABELS: Record<string, string> = {
     effortless: "Sin esfuerzo",

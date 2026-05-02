@@ -34,11 +34,21 @@ const STATUS_LABELS: Record<string, string> = {
   archived: "Archivada",
 };
 
+const COLLECTION_OPTIONS = [
+  "Summer Collection 2024",
+  "Autumn Harvest",
+  "Winter Comfort",
+  "Spring Fresh",
+  "Testing Collection",
+];
+
 function RecipeList() {
   const { token } = useAuth();
   const [recipes, setRecipes] = useState<RecipeItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [featuredCol, setFeaturedCol] = useState("");
+  const [settingsId, setSettingsId] = useState<string | null>(null);
 
   const fetchRecipes = useCallback(async () => {
     if (!token) return;
@@ -68,6 +78,35 @@ function RecipeList() {
   useEffect(() => {
     fetchRecipes();
   }, [fetchRecipes]);
+
+  // Load featured collection setting
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`${PB_URL}/api/collections/settings/records?perPage=1`);
+        if (res.ok) {
+          const data = await res.json();
+          const rec = data.items?.[0];
+          if (rec) {
+            setFeaturedCol(rec.featured_collection || "");
+            setSettingsId(rec.id);
+          }
+        }
+      } catch { /* ignore */ }
+    })();
+  }, []);
+
+  const handleFeaturedChange = async (value: string) => {
+    setFeaturedCol(value);
+    if (!token || !settingsId) return;
+    try {
+      await fetch(`${PB_URL}/api/collections/settings/records/${settingsId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ featured_collection: value }),
+      });
+    } catch { /* ignore */ }
+  };
 
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`¿Eliminar "${title}"? Esta acción no se puede deshacer.`)) return;
@@ -126,6 +165,21 @@ function RecipeList() {
           + Nueva Receta
         </Link>
       </header>
+
+      {/* ── Featured collection picker ── */}
+      <div className="admin-recipes__featured">
+        <label className="admin-recipes__featured-label">Colección destacada en Home:</label>
+        <select
+          className="admin-recipes__featured-select"
+          value={featuredCol}
+          onChange={(e) => handleFeaturedChange(e.target.value)}
+        >
+          <option value="">Ninguna</option>
+          {COLLECTION_OPTIONS.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </div>
 
       {/* ── List ── */}
       {loading ? (

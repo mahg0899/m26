@@ -21,9 +21,7 @@ export default function RecipeNotes({ recipeSlug }: RecipeNotesProps) {
     try {
       const raw = localStorage.getItem(getStorageKey(recipeSlug));
       if (raw) setNote(raw);
-    } catch {
-      // Silently ignore
-    }
+    } catch { }
     setHydrated(true);
   }, [recipeSlug]);
 
@@ -33,11 +31,8 @@ export default function RecipeNotes({ recipeSlug }: RecipeNotesProps) {
       try {
         localStorage.setItem(getStorageKey(recipeSlug), value);
         setSaveStatus("saved");
-        // Reset status after 2s
         setTimeout(() => setSaveStatus("idle"), 2000);
-      } catch {
-        // Storage full or unavailable
-      }
+      } catch { }
     },
     [recipeSlug]
   );
