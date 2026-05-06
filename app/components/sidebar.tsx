@@ -200,7 +200,7 @@ export default function Sidebar() {
           ))}
           <div className="sidebar__footer-meta">
             <span className="sidebar__status-dot" />
-            <span className="sidebar__link-text sidebar__version">v0.4.0</span>
+            <span className="sidebar__link-text sidebar__version">v0.5.1</span>
           </div>
         </div>
       </aside>

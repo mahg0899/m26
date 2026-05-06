@@ -35,6 +35,7 @@ function EditLoader({ id }: { id: string }) {
           prepTime: recipe.prep_time ? String(recipe.prep_time) : "",
           difficulty: recipe.difficulty || "effortless",
           servings: recipe.servings || "",
+          flavor: recipe.flavor || "",
           imageId: recipe.id,
           imageFile: recipe.image || null,
           ingredients,

@@ -13,6 +13,12 @@ const DIFFICULTY_LABELS: Record<string, string> = {
     advanced: "Avanzado",
 };
 
+const FLAVOR_LABELS: Record<string, string> = {
+    dulce: "Dulce",
+    salado: "Salado",
+    mixto: "Mixto",
+};
+
 interface RecipePageProps {
     params: Promise<{ slug: string }>;
 }
@@ -60,6 +66,14 @@ export default async function RecipePage({ params }: RecipePageProps) {
                             <div className="recipe-stat">
                                 <span className="recipe-stat__label">Porciones</span>
                                 <span className="recipe-stat__value">{recipe.servings}</span>
+                            </div>
+                        )}
+                        {recipe.flavor && (
+                            <div className="recipe-stat">
+                                <span className="recipe-stat__label">Sabor</span>
+                                <span className="recipe-stat__value">
+                                    {FLAVOR_LABELS[recipe.flavor] || recipe.flavor}
+                                </span>
                             </div>
                         )}
                         <div className="recipe-stat recipe-stat--action" title="Comenzar a cocinar">

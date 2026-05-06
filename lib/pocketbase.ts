@@ -9,11 +9,21 @@ export interface Recipe {
   slug: string;
   description: string | null;
   collection_label: string | null;
-  image: string | null; // filename stored in PocketBase
+  image: string | null;
   prep_time: number | null;
   difficulty: "effortless" | "easy" | "medium" | "advanced" | null;
   servings: string | null;
   body: string | null;
+  /** Campo select en PocketBase: 'dulce' | 'salado' | 'mixto' */
+  flavor: "dulce" | "salado" | "mixto" | null;
+}
+
+export type FlavorFilter = "dulce" | "salado" | "mixto";
+export type TimeFilter = "lt15" | "lt30" | "gte60";
+
+export interface RecipeFilters {
+  timeFilter?: TimeFilter | null;
+  flavorFilter?: FlavorFilter | null;
 }
 
 const PB_URL = process.env.NEXT_PUBLIC_POCKETBASE_URL || "http://localhost:8090";
@@ -67,4 +77,31 @@ export async function getFeaturedCollection(): Promise<string | null> {
   if (!res.ok) return null;
   const data = await res.json();
   return data.items?.[0]?.featured_collection || null;
+}
+
+// ── Paginated query (used for infinite scroll) ──
+
+export async function getPublishedRecipesPaginated(
+  page: number,
+  perPage: number,
+  filters?: RecipeFilters
+): Promise<{ items: Recipe[]; totalItems: number }> {
+  const parts: string[] = ["status='published'"];
+
+  if (filters?.timeFilter === "lt15") parts.push("prep_time<=15");
+  if (filters?.timeFilter === "lt30") parts.push("prep_time<=30");
+  if (filters?.timeFilter === "gte60") parts.push("prep_time>=60");
+  if (filters?.flavorFilter) parts.push(`flavor='${filters.flavorFilter}'`);
+
+  const filterStr = encodeURIComponent(parts.join("&&"));
+  const res = await fetch(
+    `${PB_URL}/api/collections/recipes/records?filter=(${filterStr})&sort=-updated&page=${page}&perPage=${perPage}`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) return { items: [], totalItems: 0 };
+  const data = await res.json();
+  return {
+    items: data.items || [],
+    totalItems: data.totalItems ?? 0,
+  };
 }

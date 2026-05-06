@@ -29,8 +29,9 @@ export interface RecipeData {
   prepTime: string;
   difficulty: string;
   servings: string;
-  imageId: string | null;   // recordId for PocketBase
-  imageFile: string | null; // filename for PocketBase
+  flavor: string;
+  imageId: string | null;
+  imageFile: string | null;
   ingredients: IngredientItem[];
   steps: StepItem[];
   pairings: PairingItem[];
@@ -170,6 +171,7 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
   const [prepTime, setPrepTime] = useState(initialData?.prepTime || "");
   const [difficulty, setDifficulty] = useState(initialData?.difficulty || "effortless");
   const [servings, setServings] = useState(initialData?.servings || "");
+  const [flavor, setFlavor] = useState(initialData?.flavor || "");
   const [existingRecordId, setExistingRecordId] = useState<string | null>(initialData?.imageId || null);
   const [existingImageFilename, setExistingImageFilename] = useState<string | null>(initialData?.imageFile || null);
   const [newImageFile, setNewImageFile] = useState<File | null>(null);
@@ -191,6 +193,7 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
 
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "error">("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Reset save status after feedback
@@ -230,6 +233,7 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
     if (!token || !title.trim()) return;
     setSaving(true);
     setSaveStatus("idle");
+    setSaveError(null);
 
     try {
       const slug = title
@@ -250,6 +254,8 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
       formData.append("prep_time", prepTime ? String(parseInt(prepTime)) : "0");
       formData.append("difficulty", difficulty);
       formData.append("servings", servings.trim() || "");
+      // PocketBase select fields rechazan cadena vacía — solo enviar si hay valor
+      if (flavor) formData.append("flavor", flavor);
       formData.append("body", body);
       if (mode === "create") formData.append("status", "published");
 
@@ -264,11 +270,24 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
 
       const res = await fetch(url, {
         method: mode === "edit" ? "PATCH" : "POST",
-        headers: { Authorization: token },
+        // PocketBase v0.23+ superuser tokens requieren prefijo Bearer
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
-      if (!res.ok) throw new Error("Error al guardar");
+      if (!res.ok) {
+        // Leer el error real de PocketBase para saber qué campo falló
+        let detail = `Status ${res.status}`;
+        try {
+          const errJson = await res.json();
+          // PocketBase devuelve: { message, data: { field: { code, message } } }
+          const fields = errJson.data ? Object.entries(errJson.data)
+            .map(([k, v]: [string, any]) => `${k}: ${v?.message ?? v?.code}`)
+            .join(", ") : null;
+          detail = fields ? `${errJson.message} (${fields})` : (errJson.message ?? detail);
+        } catch { /* res no era JSON */ }
+        throw new Error(detail);
+      }
 
       const result = await res.json();
       setSaveStatus("saved");
@@ -284,12 +303,13 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
       if (mode === "create") {
         setTimeout(() => router.push(`/recipes/${result.slug}`), 800);
       }
-    } catch {
+    } catch (err) {
       setSaveStatus("error");
+      setSaveError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
       setSaving(false);
     }
-  }, [token, title, description, collectionLabel, prepTime, difficulty, servings, newImageFile, ingredients, steps, pairings, mode, initialData?.id, router]);
+  }, [token, title, description, collectionLabel, prepTime, difficulty, servings, flavor, newImageFile, ingredients, steps, pairings, mode, initialData?.id, router]);
 
   const saveLabel = saving
     ? "Guardando…"
@@ -355,6 +375,23 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
               <input placeholder="2 Porciones" value={servings} onChange={(e) => setServings(e.target.value)} />
             </div>
           </div>
+
+          <div className="editor__flavor-row">
+            <span className="editor__field-label">Perfil de Sabor</span>
+            <div className="editor__flavor-checks">
+              {(["dulce", "salado", "mixto"] as const).map((v) => (
+                <label key={v} className={`editor__flavor-option${flavor === v ? " editor__flavor-option--active" : ""}`}>
+                  <input
+                    type="checkbox"
+                    checked={flavor === v}
+                    onChange={() => setFlavor(flavor === v ? "" : v)}
+                  />
+                  {v.charAt(0).toUpperCase() + v.slice(1)}
+                </label>
+              ))}
+            </div>
+          </div>
+
         </div>
 
         <div className="editor__right">
@@ -461,7 +498,10 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
       </div>
 
       {saveStatus === "error" && (
-        <p className="editor__error">Error al guardar. Revisa los datos e intenta de nuevo.</p>
+        <div className="editor__error">
+          <strong>Error al guardar.</strong>
+          {saveError && <span> {saveError}</span>}
+        </div>
       )}
     </div>
   );

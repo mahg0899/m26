@@ -176,13 +176,13 @@
     border: 1px solid rgba(26, 28, 25, 0.1);
     border-radius: 8px;
     font-family: var(--font-body);
-    font-size: 0.82rem;
+    font-size: 0.79rem;
     background: transparent;
     color: var(--text);
     cursor: pointer;
     outline: none;
     transition: border-color 0.2s;
-    height: 36px;
+    height: 32px;
   }
 
   .editor__meta-row .editor__select:focus {
@@ -201,12 +201,12 @@
     border: 1px solid rgba(26, 28, 25, 0.1);
     border-radius: 8px;
     font-family: var(--font-body);
-    font-size: 0.82rem;
+    font-size: 0.79rem;
     background: transparent;
     color: var(--text);
     outline: none;
     transition: border-color 0.2s;
-    height: 36px;
+    height: 32px;
   }
 
   .editor__meta-field input:focus {
@@ -545,7 +545,7 @@
   .editor__error {
     margin-top: 1rem;
     font-family: var(--font-body);
-    font-size: 0.82rem;
+    font-size: 0.79rem;
     color: var(--accent);
     text-align: center;
   }
@@ -569,5 +569,62 @@
     .editor__title-input {
       font-size: 1.6rem;
     }
+  }
+
+
+  /* == Flavor row (fila propia debajo del meta-row) =============== */
+
+  .editor__flavor-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+  }
+
+  .editor__flavor-row .editor__field-label {
+    white-space: nowrap;
+    margin-bottom: 0;
+  }
+  /* == Flavor checkboxes ========================================== */
+
+  .editor__flavor-checks {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding-top: 2px;
+  }
+
+  .editor__flavor-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border: 1.5px solid rgba(26, 28, 25, 0.12);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text);
+    opacity: 0.6;
+    cursor: pointer;
+    transition: border-color 0.18s, opacity 0.18s, background 0.18s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .editor__flavor-option input[type="checkbox"] {
+    display: none;
+  }
+
+  .editor__flavor-option:hover {
+    opacity: 0.85;
+    border-color: rgba(26, 28, 25, 0.3);
+  }
+
+  .editor__flavor-option--active {
+    background: #3b4a28;
+    border-color: #3b4a28;
+    color: #fafaf5;
+    opacity: 1;
   }
 }
