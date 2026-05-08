@@ -1,15 +1,23 @@
+import type { Metadata } from "next";
+import NotesCompendium from "./NotesCompendium";
+import "./notes.css";
 
+export const metadata: Metadata = {
+    title: "Mis Notas — M26",
+    description: "Compendio de tus notas personales por receta.",
+};
 
-export default function Notes() {
+export default function NotesPage() {
     return (
         <div className="page">
             <header className="page-header">
-                <p className="page-header__label">Tus apuntes</p>
-                <h1 className="page-header__title">Notas</h1>
+                <p className="page-header__label">Compendio personal</p>
+                <h1 className="page-header__title">Mis Notas</h1>
+                <p className="page-header__desc">
+                    Todas tus observaciones y apuntes privados, reunidos en un solo lugar.
+                </p>
             </header>
-            <div className="page-content">
-                <p>Tus notas personales aparecerán aquí. Esta sección está en desarrollo.</p>
-            </div>
+            <NotesCompendium />
         </div>
     );
 }

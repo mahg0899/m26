@@ -513,6 +513,29 @@
     border-color: var(--primary);
   }
 
+  /* ── Custom scrollbar (hidden until focus) ── */
+  .recipe-notes__input textarea::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .recipe-notes__input textarea::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .recipe-notes__input textarea::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+
+  .recipe-notes__input textarea:focus::-webkit-scrollbar-thumb {
+    background: rgba(138, 154, 91, 0.35);
+  }
+
+  .recipe-notes__input textarea:focus::-webkit-scrollbar-thumb:hover {
+    background: rgba(138, 154, 91, 0.65);
+  }
+
   .recipe-notes__footer {
     display: flex;
     justify-content: space-between;
@@ -577,6 +600,17 @@
     opacity: 0.35;
     cursor: default;
     pointer-events: none;
+  }
+
+  .recipe-actions__icon-btn--saved {
+    color: var(--accent);
+    border-color: rgba(159, 64, 45, 0.3);
+    background: rgba(159, 64, 45, 0.04);
+  }
+
+  .recipe-actions__icon-btn--saved:hover {
+    background: rgba(159, 64, 45, 0.08);
+    border-color: rgba(159, 64, 45, 0.5);
   }
 
   .recipe-actions__icon-btn svg {

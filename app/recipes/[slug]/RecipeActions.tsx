@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useSaved, type SavedPayload } from "@/lib/useSaved";
 
 interface RecipeActionsProps {
+  slug: string;
   title: string;
   description: string;
+  savedPayload: SavedPayload;
 }
 
-export default function RecipeActions({ title, description }: RecipeActionsProps) {
+export default function RecipeActions({ slug, title, description, savedPayload }: RecipeActionsProps) {
   const [copied, setCopied] = useState(false);
+  const { saved, toggle } = useSaved(slug, savedPayload);
 
   const handleShare = async () => {
     const shareData = {
@@ -39,12 +43,28 @@ export default function RecipeActions({ title, description }: RecipeActionsProps
 
   return (
     <div className="recipe-actions">
-      {/* Save — no functionality yet */}
-      <button className="recipe-actions__icon-btn" aria-label="Save recipe" disabled>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+      {/* Save — connected to localStorage */}
+      <button
+        type="button"
+        className={`recipe-actions__icon-btn${saved ? " recipe-actions__icon-btn--saved" : ""}`}
+        aria-label={saved ? "Quitar de guardados" : "Guardar receta"}
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={toggle}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill={saved ? "currentColor" : "none"}
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          width="20"
+          height="20"
+        >
           <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
         </svg>
-        <span>Guardar</span>
+        <span>{saved ? "Guardado" : "Guardar"}</span>
       </button>
 
       {/* Share — functional */}

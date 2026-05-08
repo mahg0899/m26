@@ -112,8 +112,16 @@ export default async function RecipePage({ params }: RecipePageProps) {
 
             {/* ── Actions ── */}
             <RecipeActions
+                slug={recipe.slug}
                 title={recipe.title}
                 description={recipe.description || ""}
+                savedPayload={{
+                    title: recipe.title,
+                    image: heroImage,
+                    collectionLabel: recipe.collection_label ?? null,
+                    prepTime: recipe.prep_time ?? null,
+                    difficulty: recipe.difficulty ?? null,
+                }}
             />
 
             <Link href="/recipes" className="recipe-back">← Volver a recetas</Link>

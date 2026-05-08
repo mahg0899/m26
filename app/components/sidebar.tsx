@@ -2,17 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 /* ─── SVG Icon Components ─── */
 function IconRecetas() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 11h.01" />
-      <path d="M11 15h.01" />
-      <path d="M16 16h.01" />
-      <path d="m2 16 20 6-6-20A20 20 0 0 0 2 16" />
-      <path d="M5.71 17.11a17.04 17.04 0 0 1 11.4-11.4" />
+      <path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" />
+      <path d="M6 17h12" />
     </svg>
   );
 }
@@ -26,19 +23,19 @@ function IconNotas() {
   );
 }
 
-function IconAjustes() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
 function IconGuardados() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+    </svg>
+  );
+}
+
+function IconInicio() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
     </svg>
   );
 }
@@ -67,80 +64,75 @@ function IconLogo() {
 
 /* ─── Nav Items ─── */
 const navItems = [
+  { href: "/", label: "Inicio", Icon: IconInicio },
   { href: "/recipes", label: "Recetas", Icon: IconRecetas },
   { href: "/notes", label: "Notas", Icon: IconNotas },
-  // { href: "/settings", label: "Ajustes", Icon: IconAjustes }, 
   { href: "/saved", label: "Guardados", Icon: IconGuardados },
 ];
 
 const secondaryItems = [
-  { href: "/bug-report", label: "Informar de un error", Icon: IconBugReport },
+  { href: "https://github.com/mahg0899/m26/issues/new", label: "Informar de un error", Icon: IconBugReport },
 ];
+
+/* ─── useScrollDirection hook (mobile bottom nav) ─── */
+function useScrollDirection(threshold = 8) {
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ticking.current) return;
+      ticking.current = true;
+      requestAnimationFrame(() => {
+        const current = window.scrollY;
+        const delta = current - lastScrollY.current;
+        if (Math.abs(delta) > threshold) {
+          setHidden(delta > 0 && current > 60);
+          lastScrollY.current = current;
+        }
+        ticking.current = false;
+      });
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [threshold]);
+
+  return hidden;
+}
 
 /* ─── Sidebar Component ─── */
 export default function Sidebar() {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopExpanded, setDesktopExpanded] = useState(false);
+  const bottomNavHidden = useScrollDirection();
 
-  // Close mobile sidebar on route change
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
-
-  // Escape key
+  // Escape key — collapses desktop sidebar
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setMobileOpen(false);
-        setDesktopExpanded(false);
-      }
+      if (e.key === "Escape") setDesktopExpanded(false);
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
-  const handleMouseEnter = useCallback(() => {
-    setDesktopExpanded(true);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setDesktopExpanded(false);
-  }, []);
+  const handleMouseEnter = useCallback(() => setDesktopExpanded(true), []);
+  const handleMouseLeave = useCallback(() => setDesktopExpanded(false), []);
 
   const sidebarClasses = [
     "sidebar",
-    mobileOpen ? "sidebar--mobile-open" : "",
     desktopExpanded ? "sidebar--expanded" : "",
   ]
     .filter(Boolean)
     .join(" ");
 
+  // Exact match for "/" to avoid marking every route active
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
+
   return (
     <>
-      {/* ── Mobile hamburger ── */}
-      <button
-        className="sidebar-toggle"
-        onClick={() => setMobileOpen((prev) => !prev)}
-        aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
-        id="sidebar-hamburger"
-      >
-        <div className={`hamburger ${mobileOpen ? "active" : ""}`}>
-          <span />
-          <span />
-          <span />
-        </div>
-      </button>
-
-      {/* ── Mobile overlay ── */}
-      {mobileOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      {/* ── Sidebar ── */}
+      {/* ── Desktop sidebar ── */}
       <aside
         className={sidebarClasses}
         onMouseEnter={handleMouseEnter}
@@ -154,6 +146,8 @@ export default function Sidebar() {
             </span>
             <span className="sidebar__logo-text">M26</span>
           </Link>
+
+          {/* Hidden admin access */}
           <Link href="/admin/recipes" className="sidebar__admin-trigger" title="">
             <span />
           </Link>
@@ -162,24 +156,20 @@ export default function Sidebar() {
         {/* Navigation */}
         <nav className="sidebar__nav">
           <ul>
-            {navItems.map(({ href, label, Icon }) => {
-              const isActive =
-                pathname === href || pathname.startsWith(href + "/");
-              return (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className={`sidebar__link ${isActive ? "sidebar__link--active" : ""}`}
-                    title={label}
-                  >
-                    <span className="sidebar__link-icon">
-                      <Icon />
-                    </span>
-                    <span className="sidebar__link-text">{label}</span>
-                  </Link>
-                </li>
-              );
-            })}
+            {navItems.map(({ href, label, Icon }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`sidebar__link ${isActive(href) ? "sidebar__link--active" : ""}`}
+                  title={label}
+                >
+                  <span className="sidebar__link-icon">
+                    <Icon />
+                  </span>
+                  <span className="sidebar__link-text">{label}</span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 
@@ -191,6 +181,8 @@ export default function Sidebar() {
               href={href}
               className="sidebar__footer-link"
               title={label}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <span className="sidebar__link-icon">
                 <Icon />
@@ -200,10 +192,30 @@ export default function Sidebar() {
           ))}
           <div className="sidebar__footer-meta">
             <span className="sidebar__status-dot" />
-            <span className="sidebar__link-text sidebar__version">v0.5.1</span>
+            <span className="sidebar__link-text sidebar__version">v0.6.2</span>
           </div>
         </div>
       </aside>
+
+      {/* ── Mobile / Tablet bottom nav bar ── */}
+      <nav
+        className={`bottom-nav${bottomNavHidden ? " bottom-nav--hidden" : ""}`}
+        aria-label="Navegación principal"
+      >
+        {navItems.map(({ href, label, Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className={`bottom-nav__item${isActive(href) ? " bottom-nav__item--active" : ""}`}
+            aria-label={label}
+          >
+            <span className="bottom-nav__icon">
+              <Icon />
+            </span>
+            <span className="bottom-nav__label">{label}</span>
+          </Link>
+        ))}
+      </nav>
     </>
   );
 }

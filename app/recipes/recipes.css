@@ -403,6 +403,17 @@
         border-color: rgba(26, 28, 25, 0.3);
     }
 
+    .recipe-save-btn--saved {
+        color: var(--accent);
+        border-color: rgba(159, 64, 45, 0.35);
+        opacity: 1;
+    }
+
+    .recipe-save-btn--saved:hover {
+        background: rgba(159, 64, 45, 0.06);
+        border-color: rgba(159, 64, 45, 0.55);
+    }
+
     /* ── Empty state ─────────────────────────────────────── */
 
     .recipes-empty {
@@ -547,15 +558,17 @@
 
     @media (max-width: 1024px) {
         .recipes-editorial-grid {
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
+            grid-template-columns: 1fr 300px;
+            grid-template-rows: auto;
         }
 
-        .recipes-hero-image {
-            grid-column: 1 / -1;
-            grid-row: 1;
-            min-height: 300px;
-            border-radius: 16px;
+        .recipes-editorial-grid--inverted {
+            grid-template-columns: 300px 1fr;
+        }
+
+        /* primary-block: equal split on tablet */
+        .recipes-primary-block {
+            grid-template-columns: 1fr 1fr;
         }
 
         .recipe-featured-card {
@@ -566,12 +579,13 @@
             border-radius: 16px;
         }
 
+        /* Keep 3-col bento on tablet — only collapse at mobile */
         .recipes-bento-grid {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr;
         }
 
         .recipe-mini-card--wide {
-            grid-column: 1 / -1;
+            grid-column: auto;
         }
     }
 
@@ -584,28 +598,34 @@
             margin-left: 0;
         }
 
-        .recipes-editorial-grid {
+        /* Editorial grid: single column */
+        .recipes-editorial-grid,
+        .recipes-editorial-grid--inverted {
             grid-template-columns: 1fr;
             grid-template-rows: auto;
         }
 
-        .recipes-hero-image {
-            grid-column: 1;
-            grid-row: 2;
-            min-height: 260px;
-            border-radius: 16px;
+        /* primary-block: single column, image on top via order */
+        .recipes-primary-block {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto;
         }
 
-        .recipe-featured-card {
-            grid-row: 1;
-            border-radius: 16px;
+        .recipes-primary-block .recipes-hero-image {
+            order: -1;
+            min-height: 220px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .recipes-primary-block .recipe-featured-card {
+            border-radius: 0 0 16px 16px;
         }
 
         .recipe-side-card {
-            grid-row: 3;
             border-radius: 16px;
         }
 
+        /* Bento: single column on mobile */
         .recipes-bento-grid {
             grid-template-columns: 1fr;
         }
@@ -663,13 +683,7 @@
         opacity: 0.28;
     }
 
-    /* == Grid invertido (tablet responsive) ========================= */
-
-    @media (max-width: 768px) {
-        .recipes-editorial-grid--inverted {
-            grid-template-columns: 1fr;
-        }
-    }
+    /* == Grid invertido (tablet responsive) — ya cubierto arriba == */
 
     /* -- Bot�n limpiar filtros ------------------------------ */
 

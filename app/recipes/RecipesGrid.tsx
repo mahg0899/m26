@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import type { Recipe, TimeFilter, FlavorFilter } from "@/lib/pocketbase";
 import { getAssetURL } from "@/lib/pocketbase";
+import SaveBtn from "@/app/components/SaveBtn";
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 
@@ -73,6 +74,7 @@ function FeaturedCard({ recipe }: { recipe: Recipe }) {
   const timeLabel = prepTimeLabel(recipe.prep_time);
   const diffLabel = recipe.difficulty ? DifficultyLabels[recipe.difficulty] : null;
   const tag = recipe.collection_label;
+  const imgUrl = getAssetURL(recipe.id, recipe.image, { width: 600, quality: 75 });
   return (
     <div className="recipes-primary-block">
       <Link href={`/recipes/${recipe.slug}`} className="recipe-featured-card">
@@ -93,12 +95,10 @@ function FeaturedCard({ recipe }: { recipe: Recipe }) {
         {recipe.description && <p className="recipe-featured-card__desc">{recipe.description}</p>}
         <div className="recipe-featured-card__footer">
           {diffLabel && <span className="recipe-skill-label">{diffLabel}</span>}
-          <button className="recipe-save-btn" aria-label="Guardar receta">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-            </svg>
-          </button>
+          <SaveBtn
+            slug={recipe.slug}
+            payload={{ title: recipe.title, image: imgUrl, collectionLabel: tag ?? null, prepTime: recipe.prep_time ?? null, difficulty: recipe.difficulty ?? null }}
+          />
         </div>
       </Link>
       <Link href={`/recipes/${recipe.slug}`} className="recipes-hero-image" aria-label={recipe.title}>
@@ -116,6 +116,7 @@ function SideCard({ recipe }: { recipe: Recipe }) {
   const timeLabel = prepTimeLabel(recipe.prep_time);
   const diffLabel = recipe.difficulty ? DifficultyLabels[recipe.difficulty] : null;
   const tag = recipe.collection_label;
+  const imgUrl = getAssetURL(recipe.id, recipe.image, { width: 600, quality: 80 });
   return (
     <Link href={`/recipes/${recipe.slug}`} className="recipe-side-card">
       <div className="recipe-side-card__image">
@@ -141,12 +142,10 @@ function SideCard({ recipe }: { recipe: Recipe }) {
         {recipe.description && <p className="recipe-side-card__desc">{recipe.description}</p>}
         <div className="recipe-side-card__footer">
           {diffLabel && <span className="recipe-skill-label">{diffLabel}</span>}
-          <button className="recipe-save-btn" aria-label="Guardar receta">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-            </svg>
-          </button>
+          <SaveBtn
+            slug={recipe.slug}
+            payload={{ title: recipe.title, image: imgUrl, collectionLabel: tag ?? null, prepTime: recipe.prep_time ?? null, difficulty: recipe.difficulty ?? null }}
+          />
         </div>
       </div>
     </Link>
@@ -187,12 +186,10 @@ function MiniCard({ recipe, wide }: { recipe: Recipe; wide?: boolean }) {
       </div>
       <div className="recipe-mini-card__footer">
         {diffLabel && <span className="recipe-skill-label">{diffLabel}</span>}
-        <button className="recipe-save-btn" aria-label="Guardar receta">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-          </svg>
-        </button>
+        <SaveBtn
+          slug={recipe.slug}
+          payload={{ title: recipe.title, image: imgSrc, collectionLabel: tag ?? null, prepTime: recipe.prep_time ?? null, difficulty: recipe.difficulty ?? null }}
+        />
       </div>
     </Link>
   );

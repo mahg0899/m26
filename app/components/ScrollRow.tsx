@@ -19,6 +19,7 @@ export default function ScrollRow({ children }: { children: React.ReactNode }) {
       <button
         type="button"
         className="scroll-row__arrow scroll-row__arrow--left"
+        onMouseDown={(e) => e.preventDefault()}
         onClick={() => scroll("left")}
         aria-label="Anterior"
       >
@@ -32,6 +33,7 @@ export default function ScrollRow({ children }: { children: React.ReactNode }) {
       <button
         type="button"
         className="scroll-row__arrow scroll-row__arrow--right"
+        onMouseDown={(e) => e.preventDefault()}
         onClick={() => scroll("right")}
         aria-label="Siguiente"
       >

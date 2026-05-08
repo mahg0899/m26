@@ -286,47 +286,65 @@
 
 /* ── Responsive ── */
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .home {
+    width: 88%;
     padding-top: 2rem;
-  }
-
-  .hero-card {
-    height: 400px;
-    border-radius: 16px;
-  }
-
-  .hero-card__content {
-    padding: 1.5rem 1.8rem;
-  }
-
-  .hero-card__title {
-    font-size: 1.5rem;
-  }
-
-  .hero-card__desc {
-    font-size: 0.78rem;
   }
 
   .season {
     margin-top: 2.5rem;
+    padding-bottom: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    width: 100%;
+    padding: 1.25rem 1.25rem 0;
+  }
+
+  .hero-card {
+    height: 380px;
+    border-radius: 14px;
+  }
+
+  .hero-card__content {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .hero-card__title {
+    font-size: 1.4rem;
+  }
+
+  .hero-card__desc {
+    font-size: 0.76rem;
+  }
+
+  .season {
+    margin-top: 1.75rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .season__header {
+    margin-bottom: 1.25rem;
   }
 
   .season__title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .rcard {
-    flex: 0 0 260px;
+    flex: 0 0 240px;
   }
 
   .rcard__title {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 }
 
 @media (max-width: 480px) {
   .rcard {
-    flex: 0 0 220px;
+    flex: 0 0 200px;
   }
 }
