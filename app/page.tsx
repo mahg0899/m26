@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import Link from "next/link";
 import { getPublishedRecipes, getAssetURL, getFeaturedCollection } from "@/lib/pocketbase";
 import ScrollRow from "@/app/components/ScrollRow";
