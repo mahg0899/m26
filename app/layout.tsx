@@ -15,8 +15,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Project M26",
-  description: "Proyecto M26 - Recetas y notas",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  title: {
+    default: "Donum",
+    template: "%s | Donum",
+  },
+  description: "Crea, guarda y disfruta tus recetas favoritas, todo en un mismo lugar.",
+  openGraph: {
+    siteName: "Donum",
+    locale: "es_ES",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

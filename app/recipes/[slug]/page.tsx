@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getRecipeBySlug, getAssetURL } from "@/lib/pocketbase";
@@ -21,6 +22,35 @@ const FLAVOR_LABELS: Record<string, string> = {
 
 interface RecipePageProps {
     params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
+    const { slug } = await params;
+    const recipe = await getRecipeBySlug(slug);
+    if (!recipe) return { title: "Receta no encontrada" };
+
+    const ogImage = recipe.image
+        ? `/api/pb/api/files/recipes/${recipe.id}/${recipe.image}?thumb=1200x630`
+        : undefined;
+
+    return {
+        title: recipe.title,
+        description: recipe.description ?? undefined,
+        openGraph: {
+            title: recipe.title,
+            description: recipe.description ?? undefined,
+            type: "article",
+            ...(ogImage && {
+                images: [{ url: ogImage, width: 1200, height: 630, alt: recipe.title }],
+            }),
+        },
+        twitter: {
+            card: ogImage ? "summary_large_image" : "summary",
+            title: recipe.title,
+            description: recipe.description ?? undefined,
+            ...(ogImage && { images: [ogImage] }),
+        },
+    };
 }
 
 export default async function RecipePage({ params }: RecipePageProps) {

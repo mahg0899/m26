@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+    title: "Reportar un error",
+    description: "Ayúdanos a mejorar Donum reportando cualquier error que encuentres.",
+};
 
 export default function BugReport() {
+
     return (
         <div className="page">
             <header className="page-header">

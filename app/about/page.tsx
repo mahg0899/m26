@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+    title: "Sobre Donum",
+    description: "Conoce el proyecto Donum, una app para guardar y disfrutar tus recetas favoritas.",
+    openGraph: { title: "Sobre Donum", type: "website" },
+};
 
 export default function About() {
     return (

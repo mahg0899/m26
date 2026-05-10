@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { getPublishedRecipesPaginated } from "@/lib/pocketbase";
 import { RecipesGrid } from "./RecipesGrid";
 import "./recipes.css";
+
+export const metadata: Metadata = {
+  title: "Recetas",
+  description: "Explora todas las recetas de Donum. Filtra por tiempo, sabor y más.",
+  openGraph: { title: "Recetas | Donum", type: "website" },
+};
+
 
 const INITIAL_PER_PAGE = 10;
 

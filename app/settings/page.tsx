@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+    title: "Ajustes",
+    description: "Personaliza tus preferencias en Donum.",
+};
 
 export default function Settings() {
     return (

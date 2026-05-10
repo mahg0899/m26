@@ -52,13 +52,7 @@ function IconBugReport() {
 
 function IconLogo() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-      <path d="M5 3v4" />
-      <path d="M19 17v4" />
-      <path d="M3 5h4" />
-      <path d="M17 19h4" />
-    </svg>
+    <img src="/md26.svg" alt="Logo" width="26" height="26" />
   );
 }
 
@@ -144,7 +138,7 @@ export default function Sidebar() {
             <span className="sidebar__logo-icon">
               <IconLogo />
             </span>
-            <span className="sidebar__logo-text">M26</span>
+            <span className="sidebar__logo-text">Donum</span>
           </Link>
 
           {/* Hidden admin access */}
@@ -192,7 +186,7 @@ export default function Sidebar() {
           ))}
           <div className="sidebar__footer-meta">
             <span className="sidebar__status-dot" />
-            <span className="sidebar__link-text sidebar__version">v0.7.2</span>
+            <span className="sidebar__link-text sidebar__version">v0.7.3</span>
           </div>
         </div>
       </aside>

@@ -3,8 +3,9 @@ import NotesCompendium from "./NotesCompendium";
 import "./notes.css";
 
 export const metadata: Metadata = {
-    title: "Mis Notas — M26",
-    description: "Compendio de tus notas personales por receta.",
+    title: "Mis Notas",
+    description: "Tus apuntes y observaciones privadas por receta, reunidos en un solo lugar.",
+    openGraph: { title: "Mis Notas | Donum", type: "website" },
 };
 
 export default function NotesPage() {

@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import SavedCollection from "./SavedCollection";
 
-export const metadata = {
-  title: "Guardados — M26",
-  description: "Tus recetas guardadas, siempre a mano.",
+export const metadata: Metadata = {
+  title: "Guardados",
+  description: "Las recetas que marcaste para volver a encontrarlas fácilmente.",
+  openGraph: { title: "Guardados | Donum", type: "website" },
 };
+
 
 export default function SavedPage() {
   return (
