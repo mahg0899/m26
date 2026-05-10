@@ -33,7 +33,9 @@ const HOP_BY_HOP = new Set([
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params;
-  const targetUrl = new URL(`${PB_BASE}/api/${path.join("/")}`);
+  // El cliente ya incluye "api" en la ruta (e.g. /api/pb/api/collections/...)
+  // así que solo concatenamos el path directamente sobre PB_BASE.
+  const targetUrl = new URL(`${PB_BASE}/${path.join("/")}`);
 
   // Pasar query params tal cual
   req.nextUrl.searchParams.forEach((value, key) => {
