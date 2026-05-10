@@ -26,7 +26,8 @@ export interface RecipeFilters {
   flavorFilter?: FlavorFilter | null;
 }
 
-const PB_URL = process.env.POCKETBASE_URL
+const PB_URL = process.env.POCKETBASE_INTERNAL_URL
+  || process.env.POCKETBASE_URL
   || process.env.NEXT_PUBLIC_POCKETBASE_URL
   || "http://localhost:8090";
 
