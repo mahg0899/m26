@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
 
-const PB_URL = process.env.NEXT_PUBLIC_POCKETBASE_URL || "http://localhost:8090";
+const PB_URL = "/api/pb";
 
 // ── Interfaces ──
 export interface IngredientItem {

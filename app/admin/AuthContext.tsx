@@ -2,7 +2,9 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 
-const PB_URL = process.env.NEXT_PUBLIC_POCKETBASE_URL || "http://localhost:8090";
+// Siempre usar el proxy interno de Next.js para evitar CORS / Private Network Access.
+// Next.js redirige /api/pb/* → PocketBase server-to-server (ver next.config.ts).
+const PB_URL = "/api/pb";
 const STORAGE_KEY = "m26:admin:token";
 
 interface AuthContextType {

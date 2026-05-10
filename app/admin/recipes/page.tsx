@@ -6,7 +6,7 @@ import { useAuth } from "../AuthContext";
 import LoginGate from "../LoginGate";
 import "./admin-recipes.css";
 
-const PB_URL = process.env.NEXT_PUBLIC_POCKETBASE_URL || "http://localhost:8090";
+const PB_URL = "/api/pb";
 
 interface RecipeItem {
   id: string;
