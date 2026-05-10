@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "../AuthContext";
 import LoginGate from "../LoginGate";
+import AdminShell from "../AdminShell";
+import { useCategories } from "../useCategories";
 import "./admin-recipes.css";
 
 const PB_URL = "/api/pb";
@@ -34,13 +36,6 @@ const STATUS_LABELS: Record<string, string> = {
   archived: "Archivada",
 };
 
-const COLLECTION_OPTIONS = [
-  "Summer Collection 2024",
-  "Autumn Harvest",
-  "Winter Comfort",
-  "Spring Fresh",
-  "Testing Collection",
-];
 
 function RecipeList() {
   const { token } = useAuth();
@@ -49,6 +44,9 @@ function RecipeList() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [featuredCol, setFeaturedCol] = useState("");
   const [settingsId, setSettingsId] = useState<string | null>(null);
+
+  // Categorías desde PocketBase (colección `categories` con fallback a recetas)
+  const collectionOptions = useCategories(token);
 
   const fetchRecipes = useCallback(async () => {
     if (!token) return;
@@ -81,9 +79,13 @@ function RecipeList() {
 
   // Load featured collection setting
   useEffect(() => {
+    if (!token) return;
     (async () => {
       try {
-        const res = await fetch(`${PB_URL}/api/collections/settings/records?perPage=1`);
+        const res = await fetch(
+          `${PB_URL}/api/collections/settings/records?perPage=1`,
+          { headers: { Authorization: `Bearer ${token}` } }   // ← auth requerida
+        );
         if (res.ok) {
           const data = await res.json();
           const rec = data.items?.[0];
@@ -94,18 +96,36 @@ function RecipeList() {
         }
       } catch { /* ignore */ }
     })();
-  }, []);
+  }, [token]);  // depende de token, no solo del mount
+
+  const [featuredSaving, setFeaturedSaving] = useState<"idle"|"saving"|"saved"|"error">("idle");
 
   const handleFeaturedChange = async (value: string) => {
     setFeaturedCol(value);
-    if (!token || !settingsId) return;
+    if (!token || !settingsId) {
+      console.warn("[featured] settingsId no disponible aún", { token: !!token, settingsId });
+      return;
+    }
+    setFeaturedSaving("saving");
     try {
-      await fetch(`${PB_URL}/api/collections/settings/records/${settingsId}`, {
+      const res = await fetch(`${PB_URL}/api/collections/settings/records/${settingsId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ featured_collection: value }),
       });
-    } catch { /* ignore */ }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error("[featured] Error al guardar:", err);
+        setFeaturedSaving("error");
+      } else {
+        setFeaturedSaving("saved");
+      }
+    } catch (e) {
+      console.error("[featured] Excepción:", e);
+      setFeaturedSaving("error");
+    } finally {
+      setTimeout(() => setFeaturedSaving("idle"), 2000);
+    }
   };
 
   const handleDelete = async (id: string, title: string) => {
@@ -161,25 +181,29 @@ function RecipeList() {
             {recipes.length} {recipes.length === 1 ? "receta" : "recetas"}
           </p>
         </div>
-        <Link href="/admin/recipes/new" className="admin-recipes__new-btn">
-          + Nueva Receta
-        </Link>
+        <div className="admin-recipes__header-actions">
+          <div className="admin-recipes__featured">
+            <label className="admin-recipes__featured-label">Colección en Home:</label>
+            <select
+              className="admin-recipes__featured-select"
+              value={featuredCol}
+              onChange={(e) => handleFeaturedChange(e.target.value)}
+              disabled={featuredSaving === "saving"}
+            >
+              <option value="">Ninguna</option>
+              {collectionOptions.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            {featuredSaving === "saving" && <span className="admin-recipes__featured-status">Guardando…</span>}
+            {featuredSaving === "saved"  && <span className="admin-recipes__featured-status admin-recipes__featured-status--ok">✓</span>}
+            {featuredSaving === "error"  && <span className="admin-recipes__featured-status admin-recipes__featured-status--err">✗ Error</span>}
+          </div>
+          <Link href="/admin/recipes/new" className="admin-recipes__new-btn">
+            + Nueva Receta
+          </Link>
+        </div>
       </header>
-
-      {/* ── Featured collection picker ── */}
-      <div className="admin-recipes__featured">
-        <label className="admin-recipes__featured-label">Colección destacada en Home:</label>
-        <select
-          className="admin-recipes__featured-select"
-          value={featuredCol}
-          onChange={(e) => handleFeaturedChange(e.target.value)}
-        >
-          <option value="">Ninguna</option>
-          {COLLECTION_OPTIONS.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-      </div>
 
       {/* ── List ── */}
       {loading ? (
@@ -293,7 +317,9 @@ function RecipeList() {
 export default function AdminRecipesPage() {
   return (
     <LoginGate>
-      <RecipeList />
+      <AdminShell>
+        <RecipeList />
+      </AdminShell>
     </LoginGate>
   );
 }

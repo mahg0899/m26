@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from "react";
 import { useAuth } from "../../../AuthContext";
 import LoginGate from "../../../LoginGate";
+import AdminShell from "../../../AdminShell";
 import RecipeEditor, { parseBodyToStructured, type RecipeData } from "../../../RecipeEditor";
 import "../../new/editor.css";
 
@@ -66,7 +67,9 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
 
   return (
     <LoginGate>
-      <EditLoader id={id} />
+      <AdminShell>
+        <EditLoader id={id} />
+      </AdminShell>
     </LoginGate>
   );
 }

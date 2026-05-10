@@ -32,6 +32,9 @@ const PB_URL = process.env.POCKETBASE_INTERNAL_URL
   || "http://localhost:8090";
 
 // ── Asset URL builder ──
+// Siempre usa la ruta proxy relativa (/api/pb/...) para que el browser
+// pueda alcanzar las imágenes sin acceder a la IP interna directamente.
+const PB_PUBLIC = "/api/pb";
 
 export function getAssetURL(
   recordId: string,
@@ -39,7 +42,7 @@ export function getAssetURL(
   params?: Record<string, string | number>
 ) {
   if (!filename) return null;
-  const base = `${PB_URL}/api/files/recipes/${recordId}/${filename}`;
+  const base = `${PB_PUBLIC}/api/files/recipes/${recordId}/${filename}`;
   if (!params) return base;
   const query = new URLSearchParams(
     Object.entries(params).map(([k, v]) => [k, String(v)])
@@ -52,7 +55,7 @@ export function getAssetURL(
 export async function getPublishedRecipes(): Promise<Recipe[]> {
   const res = await fetch(
     `${PB_URL}/api/collections/recipes/records?filter=(status='published')&sort=-updated`,
-    { next: { revalidate: 60 } }
+    { cache: "no-store" }
   );
   if (!res.ok) return [];
   const data = await res.json();
@@ -63,7 +66,7 @@ export async function getRecipeBySlug(slug: string): Promise<Recipe | null> {
   const encoded = encodeURIComponent(slug);
   const res = await fetch(
     `${PB_URL}/api/collections/recipes/records?filter=(slug='${encoded}'%26%26status='published')&perPage=1`,
-    { next: { revalidate: 60 } }
+    { cache: "no-store" }
   );
   if (!res.ok) return null;
   const data = await res.json();
@@ -75,11 +78,16 @@ export async function getRecipeBySlug(slug: string): Promise<Recipe | null> {
 export async function getFeaturedCollection(): Promise<string | null> {
   const res = await fetch(
     `${PB_URL}/api/collections/settings/records?perPage=1`,
-    { next: { revalidate: 60 } }
+    { cache: "no-store" }
   );
-  if (!res.ok) return null;
+  if (!res.ok) {
+    console.error(`[getFeaturedCollection] fetch failed: ${res.status} ${res.statusText}`);
+    return null;
+  }
   const data = await res.json();
-  return data.items?.[0]?.featured_collection || null;
+  const value = data.items?.[0]?.featured_collection || null;
+  console.log(`[getFeaturedCollection] value="${value}", settingsId="${data.items?.[0]?.id}"`);
+  return value;
 }
 
 // ── Paginated query (used for infinite scroll) ──

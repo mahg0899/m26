@@ -12,6 +12,34 @@ const DifficultyLabels: Record<string, string> = {
   advanced: "Avanzado",
 };
 
+function RecipeCard({ recipe }: { recipe: Awaited<ReturnType<typeof getPublishedRecipes>>[number] }) {
+  const img = getAssetURL(recipe.id, recipe.image, { width: "600", quality: "80" });
+  return (
+    <Link href={`/recipes/${recipe.slug}`} className="rcard">
+      <div className="rcard__img-wrap">
+        {img ? (
+          <img src={img} alt={recipe.title} className="rcard__img" />
+        ) : (
+          <div className="rcard__img-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" width="32" height="32">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+          </div>
+        )}
+      </div>
+      <div className="rcard__body">
+        <h3 className="rcard__title">{recipe.title}</h3>
+        <div className="rcard__meta">
+          {recipe.prep_time && <span>{recipe.prep_time} min</span>}
+          {recipe.difficulty && <span>{DifficultyLabels[recipe.difficulty]}</span>}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default async function Home() {
   const [recipes, featuredLabel] = await Promise.all([
     getPublishedRecipes(),
@@ -23,10 +51,15 @@ export default async function Home() {
     ? getAssetURL(latest.id, latest.image, { width: "1200", quality: "85" })
     : null;
 
-  // Featured collection: recipes matching the configured season (hero included)
-  const collectionRecipes = featuredLabel
-    ? recipes.filter(r => r.collection_label === featuredLabel)
+  // ── Colección destacada ──
+  const normalise = (s: string) => s.trim().toLowerCase();
+  const featuredRecipes = featuredLabel
+    ? recipes.filter(r => r.collection_label && normalise(r.collection_label) === normalise(featuredLabel))
     : [];
+
+  // ── Más recetas: publicadas que NO están en la colección destacada ──
+  const featuredIds = new Set(featuredRecipes.map(r => r.id));
+  const otherRecipes = recipes.filter(r => !featuredIds.has(r.id));
 
   return (
     <div className="home">
@@ -65,8 +98,8 @@ export default async function Home() {
         </div>
       )}
 
-      {/* ── Seasonal collection ── */}
-      {collectionRecipes.length > 0 && (
+      {/* ── Colección destacada ── */}
+      {featuredRecipes.length > 0 && featuredLabel && (
         <section className="season">
           <div className="season__header">
             <div>
@@ -78,33 +111,25 @@ export default async function Home() {
             </Link>
           </div>
           <ScrollRow>
-            {collectionRecipes.map((recipe) => {
-              const img = getAssetURL(recipe.id, recipe.image, { width: "600", quality: "80" });
-              return (
-                <Link key={recipe.id} href={`/recipes/${recipe.slug}`} className="rcard">
-                  <div className="rcard__img-wrap">
-                    {img ? (
-                      <img src={img} alt={recipe.title} className="rcard__img" />
-                    ) : (
-                      <div className="rcard__img-empty">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" width="32" height="32">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                          <circle cx="8.5" cy="8.5" r="1.5" />
-                          <polyline points="21 15 16 10 5 21" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <div className="rcard__body">
-                    <h3 className="rcard__title">{recipe.title}</h3>
-                    <div className="rcard__meta">
-                      {recipe.prep_time && <span>{recipe.prep_time} min</span>}
-                      {recipe.difficulty && <span>{DifficultyLabels[recipe.difficulty]}</span>}
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+            {featuredRecipes.map(recipe => <RecipeCard key={recipe.id} recipe={recipe} />)}
+          </ScrollRow>
+        </section>
+      )}
+
+      {/* ── Más recetas (excluyendo la colección destacada) ── */}
+      {otherRecipes.length > 0 && (
+        <section className="season">
+          <div className="season__header">
+            <div>
+              <h2 className="season__title">Más recetas</h2>
+              <div className="season__line" />
+            </div>
+            <Link href="/recipes" className="season__link">
+              Ver todas →
+            </Link>
+          </div>
+          <ScrollRow>
+            {otherRecipes.map(recipe => <RecipeCard key={recipe.id} recipe={recipe} />)}
           </ScrollRow>
         </section>
       )}

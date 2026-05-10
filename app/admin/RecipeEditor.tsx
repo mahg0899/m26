@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthContext";
+import { useCategories } from "./useCategories";
 
 const PB_URL = "/api/pb";
 
@@ -196,6 +197,9 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
   const [saveError, setSaveError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // ── Categorías desde PocketBase (colección `categories` con fallback a recetas) ──
+  const categories = useCategories(token);
+
   // Reset save status after feedback
   useEffect(() => {
     if (saveStatus === "saved" && mode === "edit") {
@@ -344,13 +348,19 @@ export default function RecipeEditor({ mode, initialData }: RecipeEditorProps) {
         <div className="editor__left">
           <div className="editor__meta-field">
             <label className="editor__field-label">Colección</label>
-            <select value={collectionLabel} onChange={(e) => setCollectionLabel(e.target.value)} className="editor__select">
+            <select
+              className="editor__select"
+              value={collectionLabel}
+              onChange={(e) => setCollectionLabel(e.target.value)}
+            >
               <option value="">Sin colección</option>
-              <option value="Summer Collection 2024">Summer Collection 2024</option>
-              <option value="Autumn Harvest">Autumn Harvest</option>
-              <option value="Winter Comfort">Winter Comfort</option>
-              <option value="Spring Fresh">Spring Fresh</option>
-              <option value="Testing Collection">Testing Collection</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+              {/* Si la receta tiene una colección que ya no existe en la lista, mostrarla igualmente */}
+              {collectionLabel && !categories.includes(collectionLabel) && (
+                <option value={collectionLabel}>{collectionLabel}</option>
+              )}
             </select>
           </div>
           <input className="editor__title-input" placeholder="Título de la Receta..." value={title} onChange={(e) => setTitle(e.target.value)} />

@@ -1,0 +1,274 @@
+/* ========================================================
+   ADMIN CATEGORIES PAGE
+   ======================================================== */
+
+@layer base {
+
+  .cat-page__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .cat-page__title {
+    font-family: var(--font-title);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .cat-page__count {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--text);
+    opacity: 0.4;
+    margin: 4px 0 0;
+  }
+
+  .cat-sync-btn {
+    padding: 7px 14px;
+    background: rgba(26, 28, 25, 0.06);
+    border: 1px solid rgba(26, 28, 25, 0.12);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .cat-sync-btn:hover { background: rgba(26, 28, 25, 0.1); }
+  .cat-sync-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .cat-sync-result {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--primary, #5a7a3a);
+    margin: 0 0 16px;
+    padding: 8px 12px;
+    background: rgba(90, 122, 58, 0.08);
+    border-radius: 6px;
+  }
+
+  .cat-sync-result--error { color: var(--accent); background: rgba(159, 64, 45, 0.08); }
+
+  /* ── Formulario nueva categoría ── */
+  .cat-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .cat-form__input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid rgba(26, 28, 25, 0.14);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .cat-form__input:focus {
+    border-color: var(--accent);
+  }
+
+  .cat-form__btn {
+    padding: 10px 18px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+
+  .cat-form__btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .cat-form__btn:not(:disabled):hover {
+    opacity: 0.88;
+  }
+
+  .cat-form__error {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--accent);
+    margin: 0 0 16px;
+  }
+
+  /* ── Loading / empty ── */
+  .cat-loading,
+  .cat-empty {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text);
+    opacity: 0.4;
+    padding: 32px 0;
+    text-align: center;
+  }
+
+  .cat-empty p { margin: 0; }
+  .cat-empty__hint { font-size: 0.78rem; margin-top: 4px !important; }
+
+  /* ── Mosaico ── */
+  .cat-list {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .cat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid rgba(26, 28, 25, 0.08);
+    border-radius: 12px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+
+  .cat-item:hover {
+    border-color: rgba(26, 28, 25, 0.16);
+    box-shadow: 0 4px 12px rgba(26, 28, 25, 0.06);
+  }
+
+  .cat-item__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .cat-item__name {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .cat-item__count {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: var(--text);
+    opacity: 0.5;
+    background: rgba(26, 28, 25, 0.06);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .cat-item__count--empty {
+    opacity: 0.3;
+    font-style: italic;
+  }
+
+  .cat-item__edit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: var(--text);
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.15s, background 0.15s;
+    flex-shrink: 0;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+
+  .cat-item:hover .cat-item__edit {
+    opacity: 0.35;
+  }
+
+  .cat-item__edit:hover {
+    opacity: 1 !important;
+    background: rgba(26, 28, 25, 0.06);
+  }
+
+  /* ── Rename inline form ── */
+  .cat-item__rename {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .cat-item__rename-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .cat-item__rename-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .cat-item__rename-save {
+    padding: 8px 16px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .cat-item__rename-save:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .cat-item__rename-cancel {
+    padding: 8px 14px;
+    background: none;
+    border: 1px solid rgba(26, 28, 25, 0.12);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--text);
+    opacity: 0.6;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .cat-item__rename-cancel:hover { opacity: 1; }
+
+}
