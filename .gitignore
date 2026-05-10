@@ -44,6 +44,9 @@ next-env.d.ts
 # Migration plans and changelogs (private)
 MIGRATION*.md
 
+# Deployment guides (contain infra details)
+DOKPLOY.md
+
 # PocketBase data
 /pb_data/
 recipes_backup.json
