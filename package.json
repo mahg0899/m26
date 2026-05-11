@@ -1,6 +1,6 @@
 {
-  "name": "donum",
-  "version": "0.7.5",
+  "name": "donum-ignis",
+  "version": "0.7.6",
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",

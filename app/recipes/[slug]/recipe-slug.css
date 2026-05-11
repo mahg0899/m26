@@ -8,6 +8,8 @@
     max-width: 1100px;
     margin: 0 auto;
     padding: 3rem 2rem 4rem;
+    overflow-x: hidden;
+    /* previene desbordamiento horizontal en cualquier viewport */
   }
 
   /* ── Hero ── */
@@ -71,7 +73,9 @@
   /* Stats bar */
   .recipe-hero__stats {
     display: flex;
-    gap: 2.5rem;
+    flex-wrap: wrap;
+    /* permite que los stats salten de línea en viewports pequeños */
+    gap: 1.25rem 2.5rem;
     border-top: 1px solid rgba(26, 28, 25, 0.1);
     padding-top: 1.25rem;
   }
@@ -654,7 +658,27 @@
     }
 
     .recipe-hero__stats {
-      gap: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 0;
+      border-top: 1px solid rgba(26, 28, 25, 0.1);
+      padding-top: 1.25rem;
+    }
+
+    .recipe-stat {
+      align-items: center;
+      text-align: center;
+    }
+
+    .recipe-stat--action {
+      grid-column: 1 / -1;
+      margin-left: 0;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .recipe-hero__desc {
+      max-width: 100%;
     }
 
     .recipe-body {

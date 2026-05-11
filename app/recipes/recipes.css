@@ -107,6 +107,7 @@
     .recipes-editorial-grid {
         display: grid;
         grid-template-columns: 1fr 350px;
+        grid-template-rows: 480px; /* altura estándar: ambas tarjetas se estiran al mismo tamaño */
         gap: 1rem;
         align-items: stretch;
     }
@@ -160,6 +161,8 @@
         border-radius: 0;
         transition: background 0.2s;
         gap: 0;
+        overflow: hidden;
+        /* evita desbordamiento vertical cuando hay mucho texto */
     }
 
     .recipe-featured-card__tags {
@@ -202,6 +205,9 @@
         position: relative;
         display: block;
         /* es un <Link> */
+        height: 100%;
+        min-height: 0;
+        /* permite que el flex/grid comprima correctamente */
     }
 
     .recipes-hero-image__placeholder {
@@ -252,10 +258,9 @@
 
     .recipe-side-card__image {
         position: relative;
-        aspect-ratio: 4 / 3;
+        flex: 0 0 55%; /* ocupa ~55 % de la altura fija de la tarjeta */
         overflow: hidden;
         background: rgba(26, 28, 25, 0.06);
-        flex-shrink: 0;
     }
 
     .recipe-side-card__image img,
@@ -560,7 +565,7 @@
     @media (max-width: 1024px) {
         .recipes-editorial-grid {
             grid-template-columns: 1fr 300px;
-            grid-template-rows: auto;
+            grid-template-rows: 420px; /* altura estándar en tablet */
         }
 
         .recipes-editorial-grid--inverted {
@@ -609,7 +614,9 @@
         /* primary-block: single column, image on top via order */
         .recipes-primary-block {
             grid-template-columns: 1fr;
-            grid-template-rows: auto auto;
+            grid-template-rows: 220px auto;
+            height: auto;
+            max-height: none;
         }
 
         .recipes-primary-block .recipes-hero-image {
